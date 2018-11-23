@@ -1,6 +1,6 @@
 #!/bin/bash - 
 
-DATADIR=~/GEANT4/datasets
+DATADIR=~/GEANT4/downloads
 for url in $(cat G4DataList.txt);
 do
 {

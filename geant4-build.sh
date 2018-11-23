@@ -39,3 +39,17 @@ cmake $SOURCE_DIR -DCMAKE_INSTALL_PREFIX=$INSTALL_DIR -DGEANT4_BUILD_MULTITHREAD
 	-DCMAKE_BUILD_TYPE=RelWithDebInfo -DGEANT4_INSTALL_DATA=OFF -DGEANT4_USE_G3TOG4=ON \
 	-DGEANT4_USE_GDML=ON -DGEANT4_USE_OPENGL_X11=ON -DGEANT4_USE_QT=ON
 make -j$(nproc) install
+ln -s $INSTALL_DIR $WORK_DIR/g4install_latest
+cd $OLDPWD
+
+# Extract datasets
+DATA_TARGET_DIR=$INSTALL_DIR/share/Geant4-$G4SOURCE_VER/data
+mkdir -p $DATA_TARGET_DIR
+for dataset in $(tail -n +2 G4DataList.txt)
+do
+	dataset=$DATADIR/$(basename $dataset)
+	tar xvf $dataset -C $DATA_TARGET_DIR/
+done
+bash -c cd;source $INSTALL_DIR/bin/geant4.sh;geant4-config --version;geant4-config --check-datasets
+
+echo "[-] INFO - Geant4 $G4SOURCE_VER installation finished."

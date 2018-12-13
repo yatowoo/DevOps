@@ -1,0 +1,47 @@
+{
+  "form": {
+    "instrument_id": 573,
+    "test_date": "2018-01-23",
+    "duration": "24",
+    "power_fee": "40.80",
+    "test_fee": "960.00",
+    "note": "测试信号产生器时间晃动与作为时钟的同步性能",
+    "sample_name": "AFG3252信号产生器",
+    "sample_count": 1,
+    "tester_type": 0,
+    "service_type": "科学研究",
+    "tester_number": "00497",
+    "tester_name": "曾晖",
+    "tester_group": "近代物理系",
+    "tester_email": "zhui@ustc.edu.cn",
+    "tester_phone": "18956074034",
+    "operator_number": "BA15004014",
+    "operator_name": "胡东栋",
+    "subject_name": "",
+    "subject_income": "",
+    "subject_area": "",
+    "subject_content": "",
+    "status": 0,
+    "message": ""
+  },
+  "test": {
+    "HPTDC": {
+      "instrument_id": 573,
+      "power_fee": "40.80",
+      "test_fee": "960.00",
+      "note": "测试信号产生器时间晃动与作为时钟的同步性能",
+      "sample_name": "AFG3252信号产生器",
+      "operator_number": "BA15004014",
+      "operator_name": "胡东栋"
+    },
+    "TOF": {
+      "instrument_id": 574,
+      "power_fee": "40.80",
+      "test_fee": "600.00",
+      "note": "测试北京谱仪端盖飞行时间探测器塑料闪烁体时间性能，检验探测器长期工作后性能变化。",
+      "sample_name": "BES-eTOF塑料闪烁体",
+      "operator_number": "BA15004010",
+      "operator_name": "孙艳坤"
+    }
+  }
+}

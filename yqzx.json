@@ -42,6 +42,16 @@
       "sample_name": "BES-eTOF塑料闪烁体",
       "operator_number": "BA15004010",
       "operator_name": "孙艳坤"
+    },
+    "PMT": {
+      "instrument_id": 585,
+      "power_fee": "74.64",
+      "test_fee": "2880.00",
+      "note": "大尺寸光电倍增管的稳定性、高压增益、工作高压、非线性等各项性能测试",
+      "sample_name": "大尺寸光电倍增管",
+      "sample_count": 14,
+      "operator_number": "SA17004091",
+      "operator_name": "李子阳"
     }
   }
 }

@@ -15,6 +15,9 @@ import datetime
 import sys
 import getpass
 import time
+from PIL import Image
+import cStringIO
+import pytesseract
 
 def CheckUrl(response):
   if response.getcode() == 200:
@@ -57,10 +60,6 @@ response = urllib2.urlopen(
   urllib2.Request(login_url, data=None, headers=start_headers)) 
 CheckUrl(response)
 
-login_url = response.geturl()
-dom = bs4.BeautifulSoup(response.read(),"html.parser")
-login_token = dom.input.attrs['value']
-
 #构造header，一般header至少要包含一下两项。这两项是从抓到的包里分析得出的。 
 login_headers = {'Content-Type': 'application/x-www-form-urlencoded',
           'User-Agent' : 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.132 Safari/537.36', 
@@ -71,11 +70,27 @@ login_headers = {'Content-Type': 'application/x-www-form-urlencoded',
            'DNT': 1,
            'Accept-Encoding': 'gzip, deflate, br'
 } 
-#构造Post数据，他也是从抓大的包里分析得出的。 
-login_data = {'_token' : login_token, 
-            'login' : raw_input('UserID : '), 
+login_url = response.geturl()
+# 处理验证码
+validate_code = ''
+validate_code_url = 'https://passport.ustc.edu.cn/validatecode.jsp?type=login'
+response = urllib2.urlopen(
+  urllib2.Request(validate_code_url, data=None, headers=start_headers))
+CheckUrl(response)
+pytesseract.pytesseract.tesseract_cmd = 'tesseract'
+validate_code_img = Image.open(cStringIO.StringIO(response.read()))
+validate_code = pytesseract.image_to_string(validate_code_img)
+validate_code = ''.join(e for e in validate_code if e.isalnum())
+validate_code_img.save(validate_code+'.png')
+validate_code_img.close()
+
+#构造Post数据，2019.03上线含验证码版本 
+login_data = {'model' : 'uplogin.jsp',
+            'service': 'http://yqzx.ustc.edu.cn/login_cas',
+            'username' : raw_input('UserID : '), 
             'password' : getpass.getpass('Passwd : '),
-            'button' : '登录'
+            'LT': validate_code,
+            'button' : ''
             } 
  
 #需要给Post数据编码 

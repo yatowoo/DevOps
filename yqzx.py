@@ -2,14 +2,9 @@
 # Script for YQZX.USTC auto login & test creating
 # Refer : https://www.2cto.com/kf/201208/145281.html
 
-import HTMLParser 
-import urlparse 
 import urllib 
-import urllib2 
-import cookielib 
-import string 
-import re
-import bs4
+import urllib2
+import cookielib
 import json
 import datetime
 import sys

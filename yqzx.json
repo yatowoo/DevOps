@@ -51,7 +51,11 @@
       "sample_name": "大尺寸光电倍增管",
       "sample_count": 14,
       "operator_number": "SA17004091",
-      "operator_name": "李子阳"
+      "operator_name": "李子阳",
+      "subject_name": "LHAASO大尺寸光电倍增管研制",
+      "subject_income": "国家重大科技专项",
+      "subject_area": "物理学",
+      "subject_content": "大尺寸光电倍增管的研制以及性能测试"
     }
   }
 }

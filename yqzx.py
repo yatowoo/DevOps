@@ -1,3 +1,4 @@
+#!/usr/bin/python2
 #coding=utf-8
 # Script for YQZX.USTC auto login & test creating
 # Refer : https://www.2cto.com/kf/201208/145281.html
@@ -118,7 +119,8 @@ else:
 #   - 创建新测试，每次最多四天
 if(mode == 'new'):
   DATE_LIMIT = 4
-  print('[-] 准备创建新测试，共'+repr(DATE_LIMIT)+'天')
+  print('===提交模式===')
+  print('[-] 准备创建新测试，共'+repr(len(data['test']))+'个测试各'+repr(DATE_LIMIT)+'天')
   post_header['Referer'] = 'http://yqzx.ustc.edu.cn/testing/create'
   for test_name in data['test'].keys():
     time.sleep(REQUEST_DELAY)
@@ -132,16 +134,18 @@ if(mode == 'new'):
       submit_data['test_date'] = test_date.strftime("%Y-%m-%d")
       print("---> Date : " + submit_data['test_date'])
       if(isDebug):
-        pprint(submit_data)
+        print(json.dumps(submit_data, ensure_ascii=False, indent=2))
       else:
         response = urllib2.urlopen(
           urllib2.Request(submit_url, data=urllib.urlencode(submit_data), headers=post_header))
         CheckUrl(response)
         print response.read()
+  print('===提交完成===')
 # MODE - EDIT
 #   - 修改已有测试内容，用yqzx.json内容替换全部
 elif(mode == 'edit'):
-  print('[-] 准备修改已有测试，正在查询已提交测试')
+  print('===修改模式===')
+  print('[-] 正在查询已提交测试')
   # 查询已提交测试
   post_header['Referer'] = 'http://yqzx.ustc.edu.cn/testing/my/'
   response = urllib2.urlopen(
@@ -149,15 +153,12 @@ elif(mode == 'edit'):
   CheckUrl(response)
   history = json.loads(response.read())
   print('[-] 查询结束，已提交测试数：'+repr(history['total']))
-  print('---> [-] 设定筛选条件为：'+'yiqi_id'+'=='+'573'+' and '+'sample_name'+'!='+'AFG3252信号产生器')
   for test in history['rows']:
     # 排除已上报的测试
     if(test['is_locked'] == '1'):
       continue
-    # 更多筛选条件 - 日期，仪器编号，具体表单项
-      # 示例：修改编号573中样品"信号产生器"为"AFG3252信号产生器"
-    if(test['yiqi_id'] != '573' or test['sample_name'] == 'AFG3252信号产生器'):
-      continue
+    # 更多筛选条件 - 日期范围，仪器编号，具体表单项
+      # 默认为全部修改
     print('---> [+] 发现侍修改测试：'+test['test_date']+' '+test['instrument_name']+' '+test['sample_name'])
     # 组装修改后表单
     time.sleep(REQUEST_DELAY)
@@ -175,9 +176,10 @@ elif(mode == 'edit'):
     post_header['X-Requested-With'] = 'XMLHttpRequest'
     if(isDebug):
       print('------> URL: '+edit_url)
-      print('------> Form: '+json.dumps(submit_data,ensure_ascii==False))
+      print('------> Form: '+json.dumps(submit_data,ensure_ascii=False,indent=2))
     else:
       response = urllib2.urlopen(
           urllib2.Request(edit_url, data=urllib.urlencode(submit_data), headers=post_header))
       CheckUrl(response)
       print('------> '+response.read())
+  print('===修改完成===')

@@ -32,6 +32,8 @@ REQUEST_DELAY = 0.5 # time (ms)
 start_url = 'http://yqzx.ustc.edu.cn'
 login_url = 'http://yqzx.ustc.edu.cn/login_cas'
 submit_url = 'http://yqzx.ustc.edu.cn/api/testing/create'
+query_url = 'http://yqzx.ustc.edu.cn/api/testing/my_testings?limit=65535&offset=0&sort=id&order=desc&_=' + repr(int(time.time()*1000))
+edit_url = 'http://yqzx.ustc.edu.cn/api/testing/edit'
 
 #构造header，一般header至少要包含一下两项。这两项是从抓到的包里分析得出的。 
 post_header = {
@@ -97,6 +99,7 @@ login_data = {'model' : 'uplogin.jsp',
 response = urllib2.urlopen(
   urllib2.Request(login_url, urllib.urlencode(login_data), post_header)) 
 CheckUrl(response)
+print('[-] 登录成功，当前用户'+login_data['username'])
 
 # 载入测试表单
 file = open('yqzx.json')
@@ -104,29 +107,77 @@ data = json.load(file)
 file.close()
 
 # 确认工作模式 - new, edit, debug
+isDebug = False
 if(len(sys.argv) > 1):
   mode = sys.argv[1]
+  if(len(sys.argv) > 2):
+    isDebug = True
 else:
   mode = 'new'
 # MODE - NEW
 #   - 创建新测试，每次最多四天
-DATE_LIMIT = 4
-post_header['Referer'] = 'http://yqzx.ustc.edu.cn/testing/create'
-for test_name in data['test'].keys():
-  time.sleep(REQUEST_DELAY)
-  submit_data = deepcopy(data['form'])
-  print("[-] Processing test : " + test_name)
-  # 组装待提交测试表单
-  for key in data['test'][test_name].keys():
-    submit_data[key] = data['test'][test_name][key]
-  for n_days in range(DATE_LIMIT):
-    test_date = datetime.date.today() - datetime.timedelta(n_days)
-    submit_data['test_date'] = test_date.strftime("%Y-%m-%d")
-    print("  Date : " + submit_data['test_date'])
-    if(mode == 'debug'):
-      pprint(submit_data)
+if(mode == 'new'):
+  DATE_LIMIT = 4
+  print('[-] 准备创建新测试，共'+DATE_LIMIT+'天')
+  post_header['Referer'] = 'http://yqzx.ustc.edu.cn/testing/create'
+  for test_name in data['test'].keys():
+    time.sleep(REQUEST_DELAY)
+    submit_data = deepcopy(data['form'])
+    print("[-] Processing test : " + test_name)
+    # 组装待提交测试表单
+    for key in data['test'][test_name].keys():
+      submit_data[key] = data['test'][test_name][key]
+    for n_days in range(DATE_LIMIT):
+      test_date = datetime.date.today() - datetime.timedelta(n_days)
+      submit_data['test_date'] = test_date.strftime("%Y-%m-%d")
+      print("  Date : " + submit_data['test_date'])
+      if(isDebug):
+        pprint(submit_data)
+      else:
+        response = urllib2.urlopen(
+          urllib2.Request(submit_url, data=urllib.urlencode(submit_data), headers=post_header))
+        CheckUrl(response)
+        print response.read()
+# MODE - EDIT
+#   - 修改已有测试内容，用yqzx.json内容替换全部
+elif(mode == 'edit'):
+  print('[-] 准备修改已有测试，正在查询已提交测试')
+  # 查询已提交测试
+  post_header['Referer'] = 'http://yqzx.ustc.edu.cn/testing/my/'
+  response = urllib2.urlopen(
+    urllib2.Request(query_url, headers=post_header))
+  CheckUrl(response)
+  history = json.loads(response.read())
+  print('[-] 查询结束，已提交测试数：'+repr(history['total']))
+  print('---> [-] 设定筛选条件为：'+'yiqi_id'+'=='+'573'+' and '+'sample_name'+'!='+'AFG3252信号产生器')
+  for test in history['rows']:
+    # 排除已上报的测试
+    if(test['is_locked'] == '1'):
+      continue
+    # 更多筛选条件 - 日期，仪器编号，具体表单项
+      # 示例：修改编号573中样品"信号产生器"为"AFG3252信号产生器"
+    if(test['yiqi_id'] != '573' or test['sample_name'] == 'AFG3252信号产生器'):
+      continue
+    print('---> [+] 发现侍修改测试：'+test['test_date']+' '+test['instrument_name']+' '+test['sample_name'])
+    # 组装修改后表单
+    time.sleep(REQUEST_DELAY)
+    submit_data = deepcopy(data['form'])
+      # 找到对应测试表单
+    for test_form in data['test'].values():
+      if(str(test_form['instrument_id']) == test['yiqi_id']):
+        break
+    for key in test_form.keys():
+      submit_data[key] = test_form[key]
+    submit_data['testing_id'] = test['id']
+    submit_data.pop('test_date')
+    # 提交修改后测试
+    post_header['Referer'] = 'http://yqzx.ustc.edu.cn/testing/edit/'+test['id']
+    post_header['X-Requested-With'] = 'XMLHttpRequest'
+    if(isDebug):
+      print('------> URL: '+edit_url)
+      print('------> Form: '+json.dumps(submit_data))
     else:
       response = urllib2.urlopen(
-        urllib2.Request(submit_url, data=urllib.urlencode(submit_data), headers=post_header))
+          urllib2.Request(edit_url, data=urllib.urlencode(submit_data), headers=post_header))
       CheckUrl(response)
-      print response.read()
+      print('------> '+response.read())

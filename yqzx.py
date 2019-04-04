@@ -6,6 +6,7 @@ import urllib
 import urllib2
 import cookielib
 import json
+from copy import deepcopy
 import datetime
 import sys
 import getpass
@@ -16,7 +17,7 @@ import pytesseract
 
 def CheckUrl(response):
   if response.getcode() == 200:
-    print "[-] Connected to " + response.geturl()
+    print("[-] Connected to " + response.geturl())
   else:
     exit()
 
@@ -30,6 +31,18 @@ start_url = 'http://yqzx.ustc.edu.cn'
 login_url = 'http://yqzx.ustc.edu.cn/login_cas'
 submit_url = 'http://yqzx.ustc.edu.cn/api/testing/create'
 
+#构造header，一般header至少要包含一下两项。这两项是从抓到的包里分析得出的。 
+post_header = {
+  'User-Agent' : 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.132 Safari/537.36', 
+  'Upgrade-Insecure-Requests' : '1',
+  'Accept-Language': 'en-GB,en;q=0.9,en-US;q=0.8,zh-CN;q=0.7,zh;q=0.6,ja;q=0.5,de;q=0.4,zh-TW;q=0.3',
+  'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8',
+  'DNT': '1',
+  'Accept-Encoding': 'gzip, deflate, br',
+  'Cache-Control':'max-age=0',
+  'Connection':'keep-alive'
+}
+
 #设置一个cookie处理器，它负责从服务器下载cookie到本地，并且在发送请求时带上本地的cookie 
 cj = cookielib.LWPCookieJar() 
 cookie_support = urllib2.HTTPCookieProcessor(cj) 
@@ -37,40 +50,22 @@ opener = urllib2.build_opener(cookie_support, urllib2.HTTPHandler)
 urllib2.install_opener(opener) 
  
 #打开登录主页面（他的目的是从页面下载cookie，这样我们在再送post数据时就有cookie了，否则发送不成功） 
-start_headers = {
-          'User-Agent' : 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.132 Safari/537.36', 
-           'Upgrade-Insecure-Requests' : 1,
-           'Accept-Language': 'en-GB,en;q=0.9,en-US;q=0.8,zh-CN;q=0.7,zh;q=0.6,ja;q=0.5,de;q=0.4,zh-TW;q=0.3',
-           'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8',
-           'DNT': 1,
-           'Accept-Encoding': 'gzip, deflate',
-           'Cache-Control':'max-age=0',
-           'Connection':'keep-alive'
-}
-response = urllib2.urlopen(urllib2.Request(start_url, data=None, headers=start_headers)) 
+response = urllib2.urlopen(urllib2.Request(start_url, data=None, headers=post_header)) 
 CheckUrl(response)
 
-start_headers['Referer'] = start_url
+post_header['Referer'] = start_url
 response = urllib2.urlopen(
-  urllib2.Request(login_url, data=None, headers=start_headers)) 
+  urllib2.Request(login_url, data=None, headers=post_header)) 
 CheckUrl(response)
 
-#构造header，一般header至少要包含一下两项。这两项是从抓到的包里分析得出的。 
-login_headers = {'Content-Type': 'application/x-www-form-urlencoded',
-          'User-Agent' : 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.132 Safari/537.36', 
-           'Upgrade-Insecure-Requests' : 1,
-           'Referer' : 'https://passport.ustc.edu.cn/login?service=http%3A%2F%2Fyqzx.ustc.edu.cn%2Flogin_cas',
-           'Accept-Language': 'en-GB,en;q=0.9,en-US;q=0.8,zh-CN;q=0.7,zh;q=0.6,ja;q=0.5,de;q=0.4,zh-TW;q=0.3',
-           'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8',
-           'DNT': 1,
-           'Accept-Encoding': 'gzip, deflate, br'
-} 
+
 login_url = response.geturl()
+post_header['Referer'] = login_url
 # 处理验证码
 validate_code = ''
 validate_code_url = 'https://passport.ustc.edu.cn/validatecode.jsp?type=login'
 response = urllib2.urlopen(
-  urllib2.Request(validate_code_url, data=None, headers=start_headers))
+  urllib2.Request(validate_code_url, data=None, headers=post_header))
 CheckUrl(response)
 pytesseract.pytesseract.tesseract_cmd = 'tesseract'
 validate_code_img = Image.open(cStringIO.StringIO(response.read()))
@@ -87,44 +82,33 @@ login_data = {'model' : 'uplogin.jsp',
             'LT': validate_code,
             'button' : ''
             } 
- 
-#需要给Post数据编码 
-login_data = urllib.urlencode(login_data) 
- 
+
 #通过urllib2提供的request方法来向指定Url发送我们构造的数据，并完成登录过程  
 response = urllib2.urlopen(
-  urllib2.Request(login_url, login_data, login_headers)) 
+  urllib2.Request(login_url, urllib.urlencode(login_data), post_header)) 
 CheckUrl(response)
 
-# Submit new test
-submit_headers = {'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
-          'User-Agent' : 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.132 Safari/537.36', 
-           'Upgrade-Insecure-Requests' : 1,
-           'Referer' : 'http://yqzx.ustc.edu.cn/testing/create',
-           'Accept-Language': 'en-GB,en;q=0.9,en-US;q=0.8,zh-CN;q=0.7,zh;q=0.6,ja;q=0.5,de;q=0.4,zh-TW;q=0.3',
-           'Accept': 'application/json, text/javascript, */*; q=0.01',
-           'DNT': 1,
-           'Accept-Encoding': 'gzip, deflate',
-           'X-Requested-With': 'XMLHttpRequest'
-}
-
+# 载入测试表单
 file = open('yqzx.json')
 data = json.load(file)
 file.close()
 
+# MODE - NEW
+#   - 创建新测试，每次最多四天
 DATE_LIMIT = 4
+post_header['Referer'] = 'http://yqzx.ustc.edu.cn/testing/create'
 for test_name in data['test'].keys():
   time.sleep(REQUEST_DELAY)
   submit_data = data['form']
-  print "[-] Processing test : " + test_name
+  print("[-] Processing test : " + test_name)
   # 组装待提交测试表单
   for key in data['test'][test_name].keys():
     submit_data[key] = data['test'][test_name][key]
   for n_days in range(DATE_LIMIT):
     test_date = datetime.date.today() - datetime.timedelta(n_days)
     submit_data['test_date'] = test_date.strftime("%Y-%m-%d")
-    print "  Date : " + submit_data['test_date'] 
+    print("  Date : " + submit_data['test_date'])
     response = urllib2.urlopen(
-      urllib2.Request(submit_url, data=urllib.urlencode(submit_data), headers=submit_headers))
+      urllib2.Request(submit_url, data=urllib.urlencode(submit_data), headers=post_header))
     CheckUrl(response)
     print response.read()

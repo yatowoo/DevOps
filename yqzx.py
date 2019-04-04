@@ -18,8 +18,9 @@ import pytesseract
 
 def CheckUrl(response):
   if response.getcode() == 200:
-    print("[-] Connected to " + response.geturl())
+    print("[-] 连接成功 ： " + response.geturl())
   else:
+    print("[X] 连接错误 - "+response.getcode()+"： " + response.geturl())
     exit()
 
 # 设置运行时编码，避免urlencode出错
@@ -51,6 +52,7 @@ opener = urllib2.build_opener(cookie_support, urllib2.HTTPHandler)
 urllib2.install_opener(opener) 
  
 #打开登录主页面（他的目的是从页面下载cookie，这样我们在再送post数据时就有cookie了，否则发送不成功） 
+print("=== 启动登录流程 ===")
 response = urllib2.urlopen(urllib2.Request(start_url, data=None, headers=post_header)) 
 CheckUrl(response)
 
@@ -70,9 +72,16 @@ response = urllib2.urlopen(
 CheckUrl(response)
 pytesseract.pytesseract.tesseract_cmd = 'tesseract'
 validate_code_img = Image.open(cStringIO.StringIO(response.read()))
-validate_code = pytesseract.image_to_string(validate_code_img)
-validate_code = ''.join(e for e in validate_code if e.isalnum())
-validate_code_img.save(validate_code+'.png')
+raw_code = pytesseract.image_to_string(validate_code_img)
+validate_code = ''.join(e for e in raw_code if e.isalnum())
+if(len(validate_code) != 4):
+  print("[X] 验证码识别出错：" + validate_code + "，请查看当前目录下_tmp.png，手动打码")
+  validate_code_img.save('_tmp.png')
+  validate_code = raw_input('---> 验证码：')
+  validate_code_img.save('_tmp_'+validate_code+'.png')
+else:
+  print("[-] 验证码识别完成，结果："+raw_code+' -> '+validate_code)
+  validate_code_img.save(validate_code+'.png')
 validate_code_img.close()
 
 #构造Post数据，2019.03上线含验证码版本 

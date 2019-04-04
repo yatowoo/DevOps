@@ -7,6 +7,7 @@ import urllib2
 import cookielib
 import json
 from copy import deepcopy
+from pprint import pprint
 import datetime
 import sys
 import getpass
@@ -93,13 +94,18 @@ file = open('yqzx.json')
 data = json.load(file)
 file.close()
 
+# 确认工作模式 - new, edit, debug
+if(len(sys.argv) > 1):
+  mode = sys.argv[1]
+else:
+  mode = 'new'
 # MODE - NEW
 #   - 创建新测试，每次最多四天
 DATE_LIMIT = 4
 post_header['Referer'] = 'http://yqzx.ustc.edu.cn/testing/create'
 for test_name in data['test'].keys():
   time.sleep(REQUEST_DELAY)
-  submit_data = data['form']
+  submit_data = deepcopy(data['form'])
   print("[-] Processing test : " + test_name)
   # 组装待提交测试表单
   for key in data['test'][test_name].keys():
@@ -108,7 +114,10 @@ for test_name in data['test'].keys():
     test_date = datetime.date.today() - datetime.timedelta(n_days)
     submit_data['test_date'] = test_date.strftime("%Y-%m-%d")
     print("  Date : " + submit_data['test_date'])
-    response = urllib2.urlopen(
-      urllib2.Request(submit_url, data=urllib.urlencode(submit_data), headers=post_header))
-    CheckUrl(response)
-    print response.read()
+    if(mode == 'debug'):
+      pprint(submit_data)
+    else:
+      response = urllib2.urlopen(
+        urllib2.Request(submit_url, data=urllib.urlencode(submit_data), headers=post_header))
+      CheckUrl(response)
+      print response.read()

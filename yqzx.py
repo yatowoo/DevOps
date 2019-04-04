@@ -112,10 +112,10 @@ file = open('yqzx.json')
 data = json.load(file)
 file.close()
 
-submit_data = data['form']
 DATE_LIMIT = 4
 for test_name in data['test'].keys():
   time.sleep(REQUEST_DELAY)
+  submit_data = data['form']
   print "[-] Processing test : " + test_name
   # 组装待提交测试表单
   for key in data['test'][test_name].keys():

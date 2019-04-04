@@ -31,8 +31,8 @@
       "test_fee": "960.00",
       "note": "测试信号产生器时间晃动与作为时钟的同步性能",
       "sample_name": "AFG3252信号产生器",
-      "operator_number": "BA15004014",
-      "operator_name": "胡东栋"
+      "operator_number": "BA18004027",
+      "operator_name": "汪新建"
     },
     "TOF": {
       "instrument_id": 574,
@@ -40,22 +40,22 @@
       "test_fee": "600.00",
       "note": "测试北京谱仪端盖飞行时间探测器塑料闪烁体时间性能，检验探测器长期工作后性能变化。",
       "sample_name": "BES-eTOF塑料闪烁体",
-      "operator_number": "BA15004010",
-      "operator_name": "孙艳坤"
+      "operator_number": "SA16004045",
+      "operator_name": "周健"
     },
     "PMT": {
       "instrument_id": 585,
       "power_fee": "74.64",
       "test_fee": "2880.00",
-      "note": "大尺寸光电倍增管的稳定性、高压增益、工作高压、非线性等各项性能测试",
-      "sample_name": "大尺寸光电倍增管",
-      "sample_count": 14,
+      "note": "紫外光敏SiPM的稳定性，高压增益，单光电子响应等各项性能测试",
+      "sample_name": "紫外光敏SiPM",
+      "sample_count": 16,
       "operator_number": "SA17004091",
       "operator_name": "李子阳",
-      "subject_name": "LHAASO大尺寸光电倍增管研制",
-      "subject_income": "国家重大科技专项",
-      "subject_area": "物理学",
-      "subject_content": "大尺寸光电倍增管的研制以及性能测试"
+      "subject_name": "新型TORCH探测技术研究",
+      "subject_income":"国家重大科技专项",
+      "subject_area":"物理学",
+      "subject_content":"紫外光敏SiPM的研制以及性能测试"
     }
   }
 }

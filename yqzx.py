@@ -1,4 +1,4 @@
-#!/usr/bin/python2
+#!/usr/bin/env python2
 #coding=utf-8
 # Script for YQZX.USTC auto login & test creating
 # Refer : https://www.2cto.com/kf/201208/145281.html

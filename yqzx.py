@@ -118,7 +118,7 @@ else:
 #   - 创建新测试，每次最多四天
 if(mode == 'new'):
   DATE_LIMIT = 4
-  print('[-] 准备创建新测试，共'+DATE_LIMIT+'天')
+  print('[-] 准备创建新测试，共'+repr(DATE_LIMIT)+'天')
   post_header['Referer'] = 'http://yqzx.ustc.edu.cn/testing/create'
   for test_name in data['test'].keys():
     time.sleep(REQUEST_DELAY)
@@ -130,7 +130,7 @@ if(mode == 'new'):
     for n_days in range(DATE_LIMIT):
       test_date = datetime.date.today() - datetime.timedelta(n_days)
       submit_data['test_date'] = test_date.strftime("%Y-%m-%d")
-      print("  Date : " + submit_data['test_date'])
+      print("---> Date : " + submit_data['test_date'])
       if(isDebug):
         pprint(submit_data)
       else:
@@ -175,7 +175,7 @@ elif(mode == 'edit'):
     post_header['X-Requested-With'] = 'XMLHttpRequest'
     if(isDebug):
       print('------> URL: '+edit_url)
-      print('------> Form: '+json.dumps(submit_data))
+      print('------> Form: '+json.dumps(submit_data,ensure_ascii==False))
     else:
       response = urllib2.urlopen(
           urllib2.Request(edit_url, data=urllib.urlencode(submit_data), headers=post_header))

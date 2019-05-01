@@ -1,4 +1,39 @@
-# Scripts for server devops
+# DevOps
+
+> Scripts for server devops.
+
+<!-- @import "[TOC]" {cmd="toc" depthFrom=1 depthTo=6 orderedList=false} -->
+
+<!-- code_chunk_output -->
+
+* [DevOps](#devops)
+	* [SS](#ss)
+		* [Usage](#usage)
+		* [ChangeLogs](#changelogs)
+	* [YQZX](#yqzx)
+		* [Usage](#usage-1)
+		* [ChangeLogs](#changelogs-1)
+		* [Dependecies](#dependecies)
+		* [Authentication](#authentication)
+		* [Test form](#test-form)
+
+<!-- /code_chunk_output -->
+
+
+## SS
+
+To check __traffic usage__ and __ping latency__ of ss servers.
+
+All codes stored and running under `ss/`, but read server info from `private-db.json`
+
+### Usage
+
+* __*./kingss.py*__: Retrieve traffic data from web server (`requests`, `bs4`).
+* __*./check-ss.sh*__: Main script, output logs.
+
+### ChangeLogs
+
+2019.05.01 - Init from old scripts.
 
 ## YQZX
 

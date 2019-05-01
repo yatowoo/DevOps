@@ -2,3 +2,6 @@ private-db.json
 
 # Tmp. file by YQZX validate code
 *.png
+
+# Log file by SS
+ss/*.log

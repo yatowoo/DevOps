@@ -31,7 +31,9 @@ shadowsocsR.sh|Setup and Start shadowsocks server|[TeddySun](https://shadowsocks
 geant4-get.py|Get latest [geant4](http://geant4.web.cern.ch/support/download) source and data url. Output `G4DataList.txt`||
 yqzx.py|Submit and Edit script for`yqzx.ustc.edu.cn`||
 ss/kingss.py|Check traffic usage of __kingss__||
-ss/check-ss.sh|Check traffic usage and ping latency of kingss||s
+ss/check-ss.sh|Check traffic usage and ping latency of kingss||
+csc.py|Check CSC application status||
+push.py|Push log and information to WeChat||
 
 ## SS
 

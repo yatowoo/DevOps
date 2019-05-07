@@ -11,7 +11,6 @@ PUSH_API = json.load(DB_FILE)['push']
 DB_FILE.close()
 
 # Load log contents for pushing
-text = ''
 with open('csc.log') as f:
   print('[-] Load log : CSC')
   log = '## CSC申请状态\n'+f.read()
@@ -21,6 +20,7 @@ with open('ss/kingss-traffic.log') as f:
 with open('ss/kingss-ping.log') as f:
   print('[-] Load log : kingss ping latency')
   log = log + f.read().replace('\n','\n\n')
+log = log+'> [More details.]('+PUSH_API['detail']+')\n\n'
 
 # Push to WeChat by Server酱
 PUSH_SCKEY = PUSH_API['SCKEY']

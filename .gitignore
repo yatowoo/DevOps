@@ -5,3 +5,4 @@ private-db.json
 
 # Log file by SS
 ss/*.log
+csc.log

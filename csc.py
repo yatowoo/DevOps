@@ -77,20 +77,7 @@ print('[+] Info - 学号: '+csc_id+', 姓名: '+csc_name)
 print('----> '+csc_status)
 print('----> '+csc_status_full)
 
-# Push to WeChat by Server酱
-PUSH_SCKEY = PUSH_API['SCKEY']
-push_url = 'https://sc.ftqq.com/'+PUSH_SCKEY+'.send'
-push_header = {}
-push_header['Content-Type'] = 'application/x-www-form-urlencoded'
-push_data = {}
-push_data['text'] = 'CSC申请状态'
-push_data['desp'] = '## 申请人信息\n学号：'+csc_id+'\n\n'+'姓名：'+csc_name+'\n## 当前状态\n'+csc_status+'\n\n'+csc_status_full+'\n'
-
-print('[-] Push info to WeChat.')
-s = requests.Session()
-r = s.post(push_url,headers=push_header,data=push_data)
-if(r.status_code == 200):
-  print('----> '+r.text)
-else:
-  print('[X] Push FAILED : '+r.text)
-  exit()
+log = open('csc.log','w')
+log.write('### 申请人信息\n学号：'+csc_id+'\n\n'+'姓名：'+csc_name+'\n### 当前状态\n'+csc_status+'\n\n'+csc_status_full+'\n')
+log.close()
+print('[-] Output: csc.log')

@@ -55,12 +55,21 @@ def get_html(url):
     print('[X] Connection FAILED: '+url)
     return None
 
+def update_db():
+  with open('media/USTC-INFO.json','w') as INFO_DBFILE:
+    json.dump(NEWS_DB, INFO_DBFILE, ensure_ascii=False, indent=2)
+    print('[-] DB - Update: '+INFO_DBFILE.name)
+
 def get_page(news_url, news_title):
-  ### Other pages
-  if(news_url.startswith(url_host + '/_')):
-    print('[+] WARNING - Skipped external page : '+news_url)
-    return None
-  news_date = ''.join(news_url.split('/')[3:5])
+  ### Check External pages
+  EXTERNAL_PAGE = False
+  if(not news_url.startswith(url_host + '/20')):
+    news_date = time.strftime('%Y%m%d') # today
+    EXTERNAL_PAGE = True
+  else:
+    news_date = ''.join(news_url.split('/')[3:5])
+
+  ### Check DB contents
   if(not NEWS_DB.get(news_date)):
     NEWS_DB[news_date] = []
   else:
@@ -71,6 +80,11 @@ def get_page(news_url, news_title):
     "title": news_title,
     "url": news_url})
   print('[+] NEWS found : ' + news_title)
+
+  if(EXTERNAL_PAGE):
+    print('[+] WARNING - Skipped external page : '+news_url)
+    update_db()
+    return None
   ### Get NEWS page content
   dom = get_html(news_url)
 
@@ -114,9 +128,7 @@ def get_page(news_url, news_title):
   with open('media/'+news_date+'-'+news_title.replace('/','-')+'.md','w') as f:
     f.write('# '+news_title+'\n\n'+news_text)
   # Update Database
-  with open('media/USTC-INFO.json','w') as INFO_DBFILE:
-    json.dump(NEWS_DB, INFO_DBFILE, ensure_ascii=False, indent=2)
-    print('[-] DB - Update: '+INFO_DBFILE.name)
+  update_db()
   return True
 
 dom_news = get_html(url_news)

@@ -29,7 +29,20 @@ with open('ss/kingss-traffic.log') as f:
 with open('ss/kingss-ping.log') as f:
   print('[-] Load log : kingss ping latency')
   log = log + f.read().replace('\n','\n\n')
+
+with open('media/USTC-INFO.json') as f:
+  NEWS_DB = json.load(f)
+  TODAY = time.strftime("%Y%m%d")
+  log = log + '## 科大新闻 - '+TODAY+'\n\n'
+  if(NEWS_DB.get(TODAY)):
+    for news in NEWS_DB[TODAY]:
+      log = log + '[' + news['title'] + '](' + news['url'] + ')\n\n'
+  if(int(time.strftime("%H")) == 22 ): # Daily push at 10 pm.
+    PUSH_ALERT = True
+
 log = log+'> [More details.]('+PUSH_API['detail']+')\n\n'
+
+print(log)
 
 if(not PUSH_ALERT):
   print('[-] All is WELL.')

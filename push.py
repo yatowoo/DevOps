@@ -7,20 +7,33 @@ import json
 import time
 
 DB_FILE = open('private-db.json')
-PUSH_API = json.load(DB_FILE)['push']
+DB_DATA = json.load(DB_FILE)
+PUSH_API = DB_DATA['push']
 DB_FILE.close()
+
+PUSH_ALERT = False
 
 # Load log contents for pushing
 with open('csc.log') as f:
   print('[-] Load log : CSC')
-  log = '## CSC申请状态\n'+f.read()
+  csc_log = f.read()
+  if(csc_log != DB_DATA['csc']['WAITING_LOG']):
+    PUSH_ALERT = True
+  log = '## CSC申请状态\n'+csc_log
 with open('ss/kingss-traffic.log') as f:
   print('[-] Load log : kingss traffic')
-  log = log+'## kingss状态\n'+f.read().replace('\n','\n\n')
+  kingss_log = f.read()
+  if(float(kingss_log.split('\n')[1].split(' ')[1]) > 80.0):
+    PUSH_ALERT = True
+  log = log+'## kingss状态\n'+kingss_log.replace('\n','\n\n')
 with open('ss/kingss-ping.log') as f:
   print('[-] Load log : kingss ping latency')
   log = log + f.read().replace('\n','\n\n')
 log = log+'> [More details.]('+PUSH_API['detail']+')\n\n'
+
+if(not PUSH_ALERT):
+  print('[-] All is WELL.')
+  exit()
 
 # Push to WeChat by Server酱
 PUSH_SCKEY = PUSH_API['SCKEY']

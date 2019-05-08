@@ -8,6 +8,8 @@
 
 * [DevOps](#devops)
 	* [Contents](#contents)
+	* [PUSH to WeChat](#push-to-wechat)
+	* [USTC News & Notice](#ustc-news-notice)
 	* [SS](#ss)
 		* [Usage](#usage)
 		* [ChangeLogs](#changelogs)
@@ -29,11 +31,40 @@ bench-teddysun.sh|Print system info and run benchmark on I/O and network|[TeddyS
 certbot-auto.sh|Auto SSL certification from Let's Encrypt||
 shadowsocsR.sh|Setup and Start shadowsocks server|[TeddySun](https://shadowsocks.be/9.html)|
 geant4-get.py|Get latest [geant4](http://geant4.web.cern.ch/support/download) source and data url. Output `G4DataList.txt`||
-yqzx.py|Submit and Edit script for`yqzx.ustc.edu.cn`||
+yqzx.py|Submit and Edit script for`yqzx.ustc.edu.cn`|[Detail](#yqzx)|
 ss/kingss.py|Check traffic usage of __kingss__||
 ss/check-ss.sh|Check traffic usage and ping latency of kingss||
 csc.py|Check CSC application status||
 push.py|Push log and information to WeChat||
+ustc-info.py|USTC News & Notice|[Detail](#ustc-news-notice)|
+
+## PUSH to WeChat
+
+Based on [Server酱](https://sc.ftqq.com/3.version), push message and markdown contents to WeChat public accoount by GET/POST request.
+
+The `SCKEY` for sendding URL is stored locally in `private-db.json`.
+
+Subject|Content|Alert|
+-|-|-|
+csc|Name, CSC ID and status text|Log changed|
+kingss|Traffic usage and ping latency|Usage > 80 GB|
+ustc-info|Daily news|10 pm.|
+
+## USTC News & Notice
+
+* Retrieve HTML contents from [科大要闻](https://www.ustc.edu.cn/kdyw2/list.htm) and [通知公告](https://www.ustc.edu.cn/2014/list.htm).
+* Store news title and url as JSON in `media/USTC-INFO.json`.
+* ONLY resolve pages like `HOST/20*` and save as MARKDOWN with images and attachments under `media/`.
+
+Data example:
+```
+{
+ "20190508": [
+   { "title": "TITLE_TEXT",
+     "url": "PAGE_URL"}
+ ]
+}
+```
 
 ## SS
 

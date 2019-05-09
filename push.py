@@ -23,7 +23,7 @@ with open('csc.log') as f:
 with open('ss/kingss-traffic.log') as f:
   print('[-] Load log : kingss traffic')
   kingss_log = f.read()
-  if(float(kingss_log.split('\n')[1].split(' ')[1]) > 80.0):
+  if(float(kingss_log.split('\n')[3].split(' ')[1]) > 80.0):
     PUSH_ALERT = True
   log = log+'## kingss状态\n'+kingss_log.replace('\n','\n\n')
 with open('ss/kingss-ping.log') as f:

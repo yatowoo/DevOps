@@ -6,15 +6,16 @@ history=kingss-history.log
 
 # Check ss traffic usage
 echo '====== Check traffic usage of kingss'
-echo '> ' `date` > $traffic_log;
+echo -e '> ' `date` '\n\n' > $traffic_log;
 echo "--> Traffic usage" >> $history;
 ./kingss.py | grep --color=auto '已用' >> $traffic_log;
+echo >> $traffic_log
 cat $traffic_log >> $history
 cat $traffic_log;
 
 # Check latency of servers by ping
 echo '====== Check ping latency of kingss'
-echo '> ' `date` > $ping_log;
+echo '>' `date` > $ping_log;
 echo "--> Ping latency" >> $history;
 
 sub=$(grep "server" ../private-db.json  | sed 's/[,"]/ /g' | sed 's/.*\[\(.*\)\]/\1/g')

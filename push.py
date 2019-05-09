@@ -42,8 +42,6 @@ with open('media/USTC-INFO.json') as f:
 
 log = log+'> [More details.]('+PUSH_API['detail']+')\n\n'
 
-print(log)
-
 if(not PUSH_ALERT):
   print('[-] All is WELL.')
   exit()

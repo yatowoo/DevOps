@@ -27,6 +27,11 @@ url_notice = 'https://www.ustc.edu.cn/2014/list.htm'
   # DOM.find_all('table')[4].find_all('p')
 news_url = 'https://www.ustc.edu.cn/2019/0426/c2017a379602/page.htm'
 
+# SKLPDE News
+  # List: DOM.find_all('table')[7].find_all('a')
+  # Content: dom.find_all('span',{'portletmode':'simpleArticleAttri'})
+url_sklpde = 'http://sklpde.ustc.edu.cn/7107/list.htm'
+
 s = requests.Session()
 s.header = {
   'User-Agent' : 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/65.0.3325.181 Safari/537.36', 

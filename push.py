@@ -5,13 +5,17 @@
 import requests
 import json
 import time
+import sys
 
 DB_FILE = open('private-db.json')
 DB_DATA = json.load(DB_FILE)
 PUSH_API = DB_DATA['push']
 DB_FILE.close()
 
-PUSH_ALERT = False
+if( len(sys.argv) > 1 and sys.argv[1] == 'debug'):
+  PUSH_ALERT = True
+else:
+  PUSH_ALERT = False
 
 # Load log contents for pushing
 log = ''

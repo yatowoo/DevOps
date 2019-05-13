@@ -14,12 +14,19 @@ DB_FILE.close()
 PUSH_ALERT = False
 
 # Load log contents for pushing
-with open('csc.log') as f:
-  print('[-] Load log : CSC')
-  csc_log = f.read()
-  if(csc_log != DB_DATA['csc']['WAITING_LOG']):
+
+# 科大新闻
+with open('media/USTC-INFO.json') as f:
+  NEWS_DB = json.load(f)
+  TODAY = time.strftime("%Y%m%d")
+  log = log + '## 科大新闻 - '+TODAY+'\n\n'
+  if(NEWS_DB.get(TODAY)):
+    for news in NEWS_DB[TODAY]:
+      log = log + '[' + news['title'] + '](' + news['url'] + ')\n\n'
+  if(int(time.strftime("%H")) == 22 ): # Daily push at 10 pm.
     PUSH_ALERT = True
-  log = '## CSC申请状态\n'+csc_log
+
+# kingss状态
 with open('ss/kingss-traffic.log') as f:
   print('[-] Load log : kingss traffic')
   kingss_log = f.read()
@@ -30,15 +37,13 @@ with open('ss/kingss-ping.log') as f:
   print('[-] Load log : kingss ping latency')
   log = log + f.read().replace('\n','\n\n')
 
-with open('media/USTC-INFO.json') as f:
-  NEWS_DB = json.load(f)
-  TODAY = time.strftime("%Y%m%d")
-  log = log + '## 科大新闻 - '+TODAY+'\n\n'
-  if(NEWS_DB.get(TODAY)):
-    for news in NEWS_DB[TODAY]:
-      log = log + '[' + news['title'] + '](' + news['url'] + ')\n\n'
-  if(int(time.strftime("%H")) == 22 ): # Daily push at 10 pm.
+# CSC申请状态
+with open('csc.log') as f:
+  print('[-] Load log : CSC')
+  csc_log = f.read()
+  if(csc_log != DB_DATA['csc']['WAITING_LOG']):
     PUSH_ALERT = True
+  log = '## CSC申请状态\n'+csc_log
 
 log = log+'> [More details.]('+PUSH_API['detail']+')\n\n'
 

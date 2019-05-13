@@ -14,7 +14,7 @@ DB_FILE.close()
 PUSH_ALERT = False
 
 # Load log contents for pushing
-
+log = ''
 # 科大新闻
 with open('media/USTC-INFO.json') as f:
   NEWS_DB = json.load(f)
@@ -43,7 +43,7 @@ with open('csc.log') as f:
   csc_log = f.read()
   if(csc_log != DB_DATA['csc']['WAITING_LOG']):
     PUSH_ALERT = True
-  log = '## CSC申请状态\n'+csc_log
+  log = log + '## CSC申请状态\n'+csc_log
 
 log = log+'> [More details.]('+PUSH_API['detail']+')\n\n'
 

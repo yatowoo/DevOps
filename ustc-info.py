@@ -55,7 +55,11 @@ def get_html(url):
   if(r.status_code == 200):
     print('[-] Connection OK : '+url)
     r.encoding = 'UTF-8'
-    return bs4.BeautifulSoup(r.text, 'html.parser')
+    if(r.url != url):
+      print('[+] Redirect to: '+r.url)
+      return None
+    else:
+      return bs4.BeautifulSoup(r.text, 'html.parser')
   else:
     print('[X] Connection FAILED: '+url)
     return None
@@ -89,9 +93,13 @@ def get_page(news_url, news_title):
   if(EXTERNAL_PAGE):
     print('[+] WARNING - Skipped external page : '+news_url)
     update_db()
-    return None
+    return False
   ### Get NEWS page content
   dom = get_html(news_url)
+  if(not dom):
+    print('[+] WARNING - Fail to resolve page.')
+    update_db()
+    return False
 
   news_title = dom.find('td',{'class':'title'}).text
   news_body = dom.find_all('table')[4]

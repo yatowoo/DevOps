@@ -1,0 +1,146 @@
+{
+  "ustc":{
+    "main":{
+      "name": "科大首页",
+      "host": "https://www.ustc.edu.cn",
+      "list": [
+        {"name": "科大要闻",
+        "url": "https://www.ustc.edu.cn/kdyw2/list.htm"},
+        {"name": "通知公告",
+        "url": "https://www.ustc.edu.cn/2014/list.htm"}
+      ]
+    },
+    "sklpde":{
+      "name": "核国重",
+      "host": "http://sklpde.ustc.edu.cn",
+      "list":[
+        {"name": "室内动态",
+          "url":"http://sklpde.ustc.edu.cn/7107/list.htm"}]
+    },
+    "pnp":{
+      "name": "粒子与核",
+      "host": "http://pnp.ustc.edu.cn/html/",
+      "list": [
+        {"name": "新闻动态",
+          "url": "http://pnp.ustc.edu.cn/html/news.php"},
+        {"name": "学术报告",
+        "url": "http://pnp.ustc.edu.cn/html/activities.php"}]
+    },
+    "physics":{
+      "name": "物理学院",
+      "host": "https://physics.ustc.edu.cn",
+      "list":[
+        {
+          "name": "学院要闻",
+          "url": "https://physics.ustc.edu.cn/3588/list.htm"
+        },
+        {
+          "name": "通知公告",
+          "url": "https://physics.ustc.edu.cn/3584/list.htm"
+        },
+        {
+          "name": "学术报告",
+          "url": "https://physics.ustc.edu.cn/xsbg/list.htm"
+        }
+      ]
+    },
+    "graduate":{
+      "name": "研究生院",
+      "host": "https://gradschool.ustc.edu.cn",
+      "list":[
+        {
+          "name": "新闻动态",
+          "url": "https://gradschool.ustc.edu.cn/ylb/xwdt.html"
+        },
+        {
+          "name": "通知公告",
+          "url": "https://gradschool.ustc.edu.cn/ylb/tzgg.html"
+        }
+      ]
+    },
+    "teach":{
+      "name": "教务处",
+      "host": "https://www.teach.ustc.edu.cn/",
+      "list":[
+        {
+          "name": "通知新闻",
+          "url": "https://www.teach.ustc.edu.cn/category/notice"
+        }
+      ]
+    },
+    "finance":{
+      "name": "财务处",
+      "host": "https://finance.ustc.edu.cn",
+      "list":[
+        {
+          "name": "通知公告",
+          "url": "https://finance.ustc.edu.cn/list.php?MenuID=008"
+        },
+        {
+          "name": "工作动态",
+          "url": "https://finance.ustc.edu.cn/list.php?MenuID=005"
+        }
+      ]
+    },
+    "network":{
+      "name": "网络中心",
+      "host": "http://ustcnet.ustc.edu.cn",
+      "list":[
+        {
+          "name": "新闻公告",
+          "url": "http://ustcnet.ustc.edu.cn/11104/list.htm"
+        }
+      ]
+    },
+    "young":{
+      "name": "青春科大",
+      "host": "http://young.ustc.edu.cn/",
+      "list":[
+        {
+          "name": "校园要闻",
+          "url": "http://young.ustc.edu.cn/15062/list.htm"
+        },
+        {
+          "name": "通知公告",
+          "url": "http://young.ustc.edu.cn/15063/list.htm"
+        },
+        {
+          "name": "社团风采",
+          "url": "http://young.ustc.edu.cn/15054/list.htm"
+        },
+        {
+          "name": "院系一线",
+          "url": "http://young.ustc.edu.cn/15052/list.htm"
+        }
+      ]
+    },
+    "logistics":{
+      "name": "饮食集团",
+      "host": "https://ysjt.ustc.edu.cn",
+      "list":[
+        {
+          "name": "通知公告",
+          "url": "https://ysjt.ustc.edu.cn/5969/list.htm"
+        }
+      ]
+    },
+    "bbs":{
+      "name": "瀚海星云",
+      "host": "http://bbs.ustc.edu.cn",
+      "list": [
+        {
+          "name": "重要通知发布",
+          "url": "http://bbs.ustc.edu.cn/cgi/bbsdoc?board=Notice"
+        },
+        {
+          "name": "今日十大",
+          "url": "http://bbs.ustc.edu.cn/cgi/bbstop10"
+        },
+        {
+          "name": "校长信箱",
+          "url": "http://bbs.ustc.edu.cn/cgi/bbsdoc?board=PresidentMbox"
+        }
+      ]
+    }
+  }
+}

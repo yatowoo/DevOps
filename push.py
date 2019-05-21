@@ -34,9 +34,13 @@ with open('media/USTC-INFO.json') as f:
 with open('ss/kingss-traffic.log') as f:
   print('[-] Load log : kingss traffic')
   kingss_log = f.read()
-  if(float(kingss_log.split('\n')[3].split(' ')[1]) > 80.0):
+  try:
+    if(float(kingss_log.split('\n')[3].split(' ')[1]) > 80.0):
+      PUSH_ALERT = True
+    log = log+'## kingss状态\n'+kingss_log.replace('\n','\n\n')
+  except:
+    log = log+'## kingss状态\n[X] ERROR - Fail to resolve traffic log\n\n'
     PUSH_ALERT = True
-  log = log+'## kingss状态\n'+kingss_log.replace('\n','\n\n')
 with open('ss/kingss-ping.log') as f:
   print('[-] Load log : kingss ping latency')
   log = log + f.read().replace('\n','\n\n')

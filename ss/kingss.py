@@ -35,9 +35,7 @@ login_headers = {
            'Accept-Language': 'en-GB,en;q=0.9,en-US;q=0.8,zh-CN;q=0.7,zh;q=0.6,ja;q=0.5,de;q=0.4,zh-TW;q=0.3',
            'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8',
            'DNT': "1",
-           'Accept-Encoding': 'gzip, deflate, br',
-           'Origin': 'http://kingfast.top',
-           'Referer': 'http://kingfast.top/index.php/index/login/'
+           'Accept-Encoding': 'gzip, deflate, br'
 }
 
 login_form = {"swapname":API_DATA['swapname'], "swappass":API_DATA['swappass']}
@@ -48,14 +46,12 @@ CheckUrl(
 )
 
 time.sleep(REQUEST_DELAY)
-login_headers['Content-Type'] =  'application/x-www-form-urlencoded'
 r = s.post(login_url, headers=login_headers, data=login_form)
 CheckUrl(r)
-login_headers.pop('Content-Type')
 
 for id in detail_id:
   time.sleep(REQUEST_DELAY)
-  r = s.get(detail_url+repr(id)+'/',headers=login_headers)
+  r = s.get(detail_url+repr(id)+'/')
   CheckUrl(r)
   dom = bs4.BeautifulSoup(r.text,'html.parser')
   for row in dom.table.find_all('td'):

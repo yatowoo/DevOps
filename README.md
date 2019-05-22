@@ -91,16 +91,20 @@ Submit script for USTC Intergrated Research Instrument Sharing Center
 
 ### ChangeLogs
 
-2019.04.04 - Feedback from lzy9404 & zhui
+__2019.05.22__ - CAS removed validation code.
+
+* Module still works, NO updates needed.
+
+__2019.04.04__ - Feedback from lzy9404 & zhui
 
 * FIX form issue caused by shallow copy
 * NEW mode for form editting
 * Check validation code and get intput from user when failed
 * MORE outputs/prompts in Chinese
 
-2019.03.26 - New login feature for validation code
+__2019.03.26__ - New login feature for validation code
 
-2018.12.13 - Move YQZX to this repo
+__2018.12.13__ - Move YQZX to this repo
 
 ### Dependecies
 

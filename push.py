@@ -45,14 +45,6 @@ with open('ss/kingss-ping.log') as f:
   print('[-] Load log : kingss ping latency')
   log = log + f.read().replace('\n','\n\n')
 
-# CSC申请状态
-with open('csc.log') as f:
-  print('[-] Load log : CSC')
-  csc_log = f.read()
-  if(csc_log != DB_DATA['csc']['WAITING_LOG']):
-    PUSH_ALERT = True
-  log = log + '## CSC申请状态\n'+csc_log
-
 log = log+'> [More details.]('+PUSH_API['detail']+')\n\n'
 
 if(not PUSH_ALERT):

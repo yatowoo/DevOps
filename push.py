@@ -30,6 +30,14 @@ with open('media/USTC-INFO.json') as f:
   if(int(time.strftime("%H")) == 22 ): # Daily push at 10 pm.
     PUSH_ALERT = True
 
+# 上海博物馆
+with open('activity.log') as f:
+  activity_log = f.read()
+  log = log + '## 上海博物馆\n'
+  if(activity_log):
+    PUSH_ALERT = True
+    log = log + activity_log
+
 # kingss状态
 with open('ss/kingss-traffic.log') as f:
   print('[-] Load log : kingss traffic')

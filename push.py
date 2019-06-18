@@ -34,7 +34,7 @@ with open('media/USTC-INFO.json') as f:
 with open('activity.log') as f:
   activity_log = f.read()
   log = log + '## 上海博物馆\n'
-  if(activity_log):
+  if(len(activity_log) > 1):
     PUSH_ALERT = True
     log = log + activity_log
 

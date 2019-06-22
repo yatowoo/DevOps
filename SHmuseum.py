@@ -69,16 +69,18 @@ def InsertDB(act):
       db.rollback()
       raise
 
+fout = open('activity.log','w')
 for pageNo in range(1,10):
   time.sleep(REQUEST_DELAY)
   API_DATA['pageNo'] = pageNo
   r = s.post(API_URL, headers=login_header, data=API_DATA, timeout=2)
   RAW = json.loads(r.text)
   for act in RAW['activityList']:
-    InsertDB(act)
-    #print(act['activityDate'] + ' ' + act['activityName'])
-    if(act['activityStatus'] != '该活动预约人数已至上限。' and act['activityStatus'] != '该活动已结束。'):
-      print(act['activityDate'] + ' ' + act['activityName']+' '+act['speaker']+'\n')
-      print('> '+act['activityContent']+'\n')
+    if(InsertDB(act)):
+      if(act['activityStatus'] != '该活动预约人数已至上限。' and act['activityStatus'] != '该活动已结束。'):
+        print('\n[+] !!! NEW available activity !!!\n')
+        fout.write(act['activityDate'] + ' ' + act['activityName']+' '+act['speaker']+'\n\n')
+        fout.write('> '+act['activityContent']+'\n')
 
+fout.close()
 db.close()

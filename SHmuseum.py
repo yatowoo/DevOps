@@ -68,6 +68,8 @@ def InsertDB(act):
     except:
       db.rollback()
       raise
+    finally:
+      return True
 
 fout = open('activity.log','w')
 for pageNo in range(1,10):

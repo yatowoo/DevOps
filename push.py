@@ -43,7 +43,7 @@ with open('ss/kingss-traffic.log') as f:
   print('[-] Load log : kingss traffic')
   kingss_log = f.read()
   try:
-    if(float(kingss_log.split('\n')[3].split(' ')[1]) > 80.0):
+    if(float(kingss_log.split('\n')[3].split(' ')[1]) > 95.):
       PUSH_ALERT = True
     log = log+'## kingss状态\n'+kingss_log.replace('\n','\n\n')
   except:

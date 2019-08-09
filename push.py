@@ -6,6 +6,7 @@ import requests
 import json
 import time
 import sys
+import pymysql
 
 DB_FILE = open('private-db.json')
 DB_DATA = json.load(DB_FILE)
@@ -16,27 +17,43 @@ if( len(sys.argv) > 1 and sys.argv[1] == 'debug'):
   PUSH_ALERT = True
 else:
   PUSH_ALERT = False
+# Daily push at 10 pm.
+PUSH_DAILY = False
+if(int(time.strftime("%H")) == 22 ): 
+  PUSH_DAILY = True
+  PUSH_ALERT = True
+
+
+# Open MySQL connection
+with open('private-db.json') as f:
+  API_DB = json.load(f)['rss']
+  db = pymysql.connect('localhost',API_DB['USER'], API_DB['PASS'], 'rss')
+  p = db.cursor()
 
 # Load log contents for pushing
 log = ''
 # 科大新闻
-with open('media/USTC-INFO.json') as f:
-  NEWS_DB = json.load(f)
-  TODAY = time.strftime("%Y%m%d")
-  log = log + '## 科大新闻 - '+TODAY+'\n\n'
-  if(NEWS_DB.get(TODAY)):
-    for news in NEWS_DB[TODAY]:
-      log = log + '[' + news['title'] + '](' + news['url'] + ')\n\n'
-  if(int(time.strftime("%H")) == 22 ): # Daily push at 10 pm.
-    PUSH_ALERT = True
+TODAY = time.strftime("%Y%m%d")
+log = log + '## 科大新闻 - '+TODAY+'\n\n'
+datestamp = time.strftime("%Y-%m-%d 00:00:00")
+cmd = "SELECT * FROM info WHERE DATE(scrap_time) >= '" + datestamp + "' AND source='USTC'"
+if(p.execute(cmd) > 0):
+  result = p.fetchall()
+  for row in result:
+    log = log + '[' + row[2] + '](' + row[4] + ')\n\n'
 
 # 上海博物馆
-with open('activity.log') as f:
-  activity_log = f.read()
-  log = log + '## 上海博物馆\n'
-  if(len(activity_log) > 1):
-    PUSH_ALERT = True
-    log = log + activity_log
+log = log + '## 上海博物馆\n'
+if(PUSH_DAILY):
+  datestamp = time.strftime("%Y-%m-%d 00:00:00")
+else:
+  datestamp = time.strftime("%Y-%m-%d %H:00:00")
+cmd = "SELECT * FROM info WHERE DATE(scrap_time) >= '" + datestamp + "' AND source='上海博物馆'"
+if(p.execute(cmd) > 0):
+  PUSH_ALERT = True
+  result = p.fetchall()
+  for row in result:
+    log = log + '[' + row[2] + '](' + row[4] + ')\n\n'
 
 # Push to WeChat by Server酱
 PUSH_SCKEY = PUSH_API['SCKEY']
@@ -55,3 +72,5 @@ if(r.status_code == 200):
 else:
   print('[X] Push FAILED : '+r.text)
   exit()
+
+db.close()

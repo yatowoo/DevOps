@@ -46,10 +46,6 @@ s.proxies = {
   'http':'',
   'https':''}
 
-INFO_DBFILE = open('media/USTC-INFO.json','r')
-NEWS_DB = json.load(INFO_DBFILE)
-INFO_DBFILE.close()
-
 # Open MySQL connection
 with open('private-db.json') as f:
   API_DB = json.load(f)['rss']
@@ -70,11 +66,6 @@ def get_html(url):
   else:
     print('[X] Connection FAILED: '+url)
     return None
-
-def update_db():
-  with open('media/USTC-INFO.json','w') as INFO_DBFILE:
-    json.dump(NEWS_DB, INFO_DBFILE, ensure_ascii=False, indent=2)
-    print('[-] DB - Update: '+INFO_DBFILE.name)
 
 
 def get_page(news_url, news_title):
@@ -101,27 +92,13 @@ def get_page(news_url, news_title):
   else:
     news_date = ''.join(news_url.split('/')[3:5])
 
-  ### Check DB contents
-  if(not NEWS_DB.get(news_date)):
-    NEWS_DB[news_date] = []
-  else:
-    for news in NEWS_DB[news_date]:
-      if(news['url'] == news_url):
-        return False
-  NEWS_DB[news_date].append({
-    "title": news_title,
-    "url": news_url})
-  print('[+] NEWS found : ' + news_title)
-
   if(EXTERNAL_PAGE):
     print('[+] WARNING - Skipped external page : '+news_url)
-    update_db()
     return False
   ### Get NEWS page content
   dom = get_html(news_url)
   if(not dom):
     print('[+] WARNING - Fail to resolve page.')
-    update_db()
     return False
 
   news_title = dom.find('td',{'class':'title'}).text
@@ -163,8 +140,6 @@ def get_page(news_url, news_title):
   # Output text content
   with open('media/'+news_date+'-'+news_title.replace('/','-')+'.md','w') as f:
     f.write('# '+news_title+'\n\n'+news_text)
-  # Update Database
-  update_db()
   return True
 
 dom_news = get_html(url_news)
@@ -175,9 +150,5 @@ dom_notice = get_html(url_notice)
 for notice_list in dom_notice.find_all('table',{'portletmode':'simpleNews'}):
   for elem in notice_list.find_all('a'):
     get_page(url_host + elem['href'], elem.text)
-
-with open('media/USTC-INFO.json','w') as INFO_DBFILE:
-  json.dump(NEWS_DB, INFO_DBFILE, ensure_ascii=False, indent=2)
-  print('[-] Output: '+INFO_DBFILE.name)
 
 db.close()

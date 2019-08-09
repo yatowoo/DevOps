@@ -7,6 +7,7 @@ import bs4
 import socks
 import json
 import time
+import pymysql
 
 REQUEST_DELAY = 0.2 # second
 
@@ -49,6 +50,12 @@ INFO_DBFILE = open('media/USTC-INFO.json','r')
 NEWS_DB = json.load(INFO_DBFILE)
 INFO_DBFILE.close()
 
+# Open MySQL connection
+with open('private-db.json') as f:
+  API_DB = json.load(f)['rss']
+  db = pymysql.connect('localhost',API_DB['USER'], API_DB['PASS'], 'rss')
+  p = db.cursor()
+
 def get_html(url):
   time.sleep(REQUEST_DELAY)
   r = s.get(url)
@@ -69,7 +76,23 @@ def update_db():
     json.dump(NEWS_DB, INFO_DBFILE, ensure_ascii=False, indent=2)
     print('[-] DB - Update: '+INFO_DBFILE.name)
 
+
 def get_page(news_url, news_title):
+  ### Check MySQL DB
+  cmd = "SELECT * FROM info WHERE title='%s'" % news_title
+  if(p.execute(cmd) > 0):
+    print('[+] INFO existed - ' + news_title)
+    return False
+  else:  
+    print('[+] INFO NEWS found - ' + news_title)
+  try:
+    cmd = "INSERT INTO info(title, abstract, url, source, info_time) VALUES ('%s', '%s','%s','%s', '%s')" % \
+      (news_title, '', news_url, 'USTC', time.strftime("%Y-%m-%d 00:00:00"))
+    p.execute(cmd)
+    db.commit()
+  except:
+    db.rollback()
+    raise
   ### Check External pages
   EXTERNAL_PAGE = False
   if(not news_url.startswith(url_host + '/20')):
@@ -156,3 +179,5 @@ for notice_list in dom_notice.find_all('table',{'portletmode':'simpleNews'}):
 with open('media/USTC-INFO.json','w') as INFO_DBFILE:
   json.dump(NEWS_DB, INFO_DBFILE, ensure_ascii=False, indent=2)
   print('[-] Output: '+INFO_DBFILE.name)
+
+db.close()

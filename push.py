@@ -38,27 +38,6 @@ with open('activity.log') as f:
     PUSH_ALERT = True
     log = log + activity_log
 
-# kingss状态
-with open('ss/kingss-traffic.log') as f:
-  print('[-] Load log : kingss traffic')
-  kingss_log = f.read()
-  try:
-    if(float(kingss_log.split('\n')[3].split(' ')[1]) > 95.):
-      PUSH_ALERT = True
-    log = log+'## kingss状态\n'+kingss_log.replace('\n','\n\n')
-  except:
-    log = log+'## kingss状态\n[X] ERROR - Fail to resolve traffic log\n\n'
-    PUSH_ALERT = True
-with open('ss/kingss-ping.log') as f:
-  print('[-] Load log : kingss ping latency')
-  log = log + f.read().replace('\n','\n\n')
-
-log = log+'> [More details.]('+PUSH_API['detail']+')\n\n'
-
-if(not PUSH_ALERT):
-  print('[-] All is WELL.')
-  exit()
-
 # Push to WeChat by Server酱
 PUSH_SCKEY = PUSH_API['SCKEY']
 push_url = 'https://sc.ftqq.com/'+PUSH_SCKEY+'.send'

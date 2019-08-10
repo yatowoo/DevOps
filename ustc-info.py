@@ -47,12 +47,12 @@ with open('private-db.json') as f:
   db = pymysql.connect('localhost',API_DB['USER'], API_DB['PASS'], 'rss')
   p = db.cursor()
 
-def get_html(url):
+def get_html(url, encoding='UTF-8'):
   time.sleep(REQUEST_DELAY)
   r = s.get(url)
   if(r.status_code == 200):
     print('[-] Connection OK : '+url)
-    r.encoding = 'UTF-8'
+    r.encoding = encoding
     if(r.url != url):
       print('[+] Redirect to: '+r.url)
       return None
@@ -168,12 +168,12 @@ host_pnp = 'http://pnp.ustc.edu.cn/html'
 url_pnp = 'http://pnp.ustc.edu.cn/html/news.php'
 dom_pnp = get_html(url_pnp)
 for elem in dom_pnp.find_all('ul')[2].find_all('a'):
-  get_page(host_pnp + elem['href'], elem.text, source='USTC-PNP', store_content=False)
+  get_page(host_pnp + '/' + elem['href'], elem.text, source='USTC-PNP', store_content=False)
   # Seminar
 url_pnp_seminar = 'http://pnp.ustc.edu.cn/html/activities.php'
 dom_pnp = get_html(url_pnp_seminar)
 for elem in dom_pnp.find_all('ul')[2].find_all('a'):
-  get_page(host_pnp + elem['href'], elem.text, source='USTC-PNP', store_content=False)
+  get_page(host_pnp + '/' + elem['href'], elem.text, source='USTC-PNP', store_content=False)
 
 # Physics
 print('\n======RSS Update : USTC-Physics======')
@@ -190,5 +190,16 @@ url_phys_notice = 'https://physics.ustc.edu.cn/3584/list.htm'
 dom = get_html(url_phys_notice)
 for elem in dom.find(id='wp_news_w06').find_all('a') + dom.find(id='wp_news_w07').find_all('a'):
   get_page(host_phys + elem['href'], elem['title'], source='USTC-Physics', store_content=False)
+
+# Graduate School
+print('\n======RSS Update : USTC-Gradschool======')
+host_grad = 'https://gradschool.ustc.edu.cn/'
+dom = get_html(host_grad, encoding='gb2312')
+for elem in dom.find_all('a')[29:39] + dom.find_all('a')[43:53]:
+  url = elem['href']
+  if(not url.startswith('http')):
+    url = host_grad + '/' + url
+  get_page(url, elem.text, source='USTC-Gradschool', store_content=False)
+
 
 db.close()

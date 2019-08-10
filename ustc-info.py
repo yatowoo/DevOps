@@ -168,11 +168,27 @@ host_pnp = 'http://pnp.ustc.edu.cn/html'
 url_pnp = 'http://pnp.ustc.edu.cn/html/news.php'
 dom_pnp = get_html(url_pnp)
 for elem in dom_pnp.find_all('ul')[2].find_all('a'):
-  get_page(host_sklpde + elem['href'], elem.text, source='USTC-PNP', store_content=False)
+  get_page(host_pnp + elem['href'], elem.text, source='USTC-PNP', store_content=False)
   # Seminar
 url_pnp_seminar = 'http://pnp.ustc.edu.cn/html/activities.php'
 dom_pnp = get_html(url_pnp_seminar)
 for elem in dom_pnp.find_all('ul')[2].find_all('a'):
-  get_page(host_sklpde + elem['href'], elem.text, source='USTC-PNP', store_content=False)
+  get_page(host_pnp + elem['href'], elem.text, source='USTC-PNP', store_content=False)
+
+# Physics
+print('\n======RSS Update : USTC-Physics======')
+host_phys = 'https://physics.ustc.edu.cn'
+  # News
+url_phys_news = 'https://physics.ustc.edu.cn/3588/list.htm'
+dom = get_html(url_phys_news)
+elem = dom.find(id='wp_news_w06').find_all('a')[1]
+get_page(host_phys + elem['href'], elem['title'], source='USTC-Physics', store_content=False)
+for elem in  dom.find(id='wp_news_w07').find_all('a'):
+  get_page(host_phys + elem['href'], elem['title'], source='USTC-Physics', store_content=False)
+  # Notice
+url_phys_notice = 'https://physics.ustc.edu.cn/3584/list.htm'
+dom = get_html(url_phys_notice)
+for elem in dom.find(id='wp_news_w06').find_all('a') + dom.find(id='wp_news_w07').find_all('a'):
+  get_page(host_phys + elem['href'], elem['title'], source='USTC-Physics', store_content=False)
 
 db.close()

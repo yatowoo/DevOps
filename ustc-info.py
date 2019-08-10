@@ -140,6 +140,7 @@ def get_page(news_url, news_title, source='USTC', store_content = True):
     f.write('# '+news_title+'\n\n'+news_text)
   return True
 
+print('\n======RSS Update : USTC-NEWS======')
 dom_news = get_html(url_news)
 for elem in dom_news.find_all('tr',{'class':'light'}):
   get_page(url_host + elem.a['href'], elem.a.text)
@@ -152,10 +153,26 @@ for notice_list in dom_notice.find_all('table',{'portletmode':'simpleNews'}):
 # SKLPDE News
   # List: DOM.find_all('table')[7].find_all('a')
   # Content: dom.find_all('span',{'portletmode':'simpleArticleAttri'})
+print('\n======RSS Update : USTC-SKLPDE======')
 host_sklpde = 'http://sklpde.ustc.edu.cn'
 url_sklpde = 'http://sklpde.ustc.edu.cn/7107/list.htm'
 dom_sklpde = get_html(url_sklpde)
 for elem in dom_sklpde.find_all('table')[7].find_all('a'):
   get_page(host_sklpde + elem['href'], elem['title'], source='USTC-SKLPDE', store_content=False)
+
+# PNP - Particle and Nuclear Physics
+  # List: ul[2] -> a
+print('\n======RSS Update : USTC-PNP======')
+host_pnp = 'http://pnp.ustc.edu.cn/html'
+  # NEWS
+url_pnp = 'http://pnp.ustc.edu.cn/html/news.php'
+dom_pnp = get_html(url_pnp)
+for elem in dom_pnp.find_all('ul')[2].find_all('a'):
+  get_page(host_sklpde + elem['href'], elem.text, source='USTC-PNP', store_content=False)
+  # Seminar
+url_pnp_seminar = 'http://pnp.ustc.edu.cn/html/activities.php'
+dom_pnp = get_html(url_pnp_seminar)
+for elem in dom_pnp.find_all('ul')[2].find_all('a'):
+  get_page(host_sklpde + elem['href'], elem.text, source='USTC-PNP', store_content=False)
 
 db.close()

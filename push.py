@@ -36,7 +36,7 @@ log = ''
 TODAY = time.strftime("%Y%m%d")
 log = log + '## 科大新闻 - '+TODAY+'\n\n'
 datestamp = time.strftime("%Y-%m-%d 00:00:00")
-cmd = "SELECT * FROM info WHERE DATE(scrap_time) >= '" + datestamp + "' AND source='USTC'"
+cmd = "SELECT * FROM info WHERE DATE(scrap_time) >= '" + datestamp + "' AND source LIKE '%USTC%'"
 if(p.execute(cmd) > 0):
   result = p.fetchall()
   for row in result:

@@ -55,6 +55,10 @@ if(p.execute(cmd) > 0):
   for row in result:
     log = log + '[' + row[2] + '](' + row[4] + ')\n\n'
 
+db.close()
+
+if(not PUSH_ALERT):
+  exit()
 # Push to WeChat by Server酱
 PUSH_SCKEY = PUSH_API['SCKEY']
 push_url = 'https://sc.ftqq.com/'+PUSH_SCKEY+'.send'
@@ -73,4 +77,3 @@ else:
   print('[X] Push FAILED : '+r.text)
   exit()
 
-db.close()

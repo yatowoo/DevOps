@@ -28,11 +28,6 @@ url_notice = 'https://www.ustc.edu.cn/2014/list.htm'
   # DOM.find_all('table')[4].find_all('p')
 news_url = 'https://www.ustc.edu.cn/2019/0426/c2017a379602/page.htm'
 
-# SKLPDE News
-  # List: DOM.find_all('table')[7].find_all('a')
-  # Content: dom.find_all('span',{'portletmode':'simpleArticleAttri'})
-url_sklpde = 'http://sklpde.ustc.edu.cn/7107/list.htm'
-
 s = requests.Session()
 s.header = {
   'User-Agent' : 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/65.0.3325.181 Safari/537.36', 
@@ -68,7 +63,7 @@ def get_html(url):
     return None
 
 
-def get_page(news_url, news_title):
+def get_page(news_url, news_title, source='USTC', store_content = True):
   ### Check MySQL DB
   cmd = "SELECT * FROM info WHERE title='%s'" % news_title
   if(p.execute(cmd) > 0):
@@ -78,12 +73,15 @@ def get_page(news_url, news_title):
     print('[+] INFO NEWS found - ' + news_title)
   try:
     cmd = "INSERT INTO info(title, abstract, url, source, info_time) VALUES ('%s', '%s','%s','%s', '%s')" % \
-      (news_title, '', news_url, 'USTC', time.strftime("%Y-%m-%d 00:00:00"))
+      (news_title, '', news_url, source, time.strftime("%Y-%m-%d 00:00:00"))
     p.execute(cmd)
     db.commit()
   except:
     db.rollback()
     raise
+  ### Store page content
+  if(not store_content):
+    return
   ### Check External pages
   EXTERNAL_PAGE = False
   if(not news_url.startswith(url_host + '/20')):
@@ -150,5 +148,14 @@ dom_notice = get_html(url_notice)
 for notice_list in dom_notice.find_all('table',{'portletmode':'simpleNews'}):
   for elem in notice_list.find_all('a'):
     get_page(url_host + elem['href'], elem.text)
+
+# SKLPDE News
+  # List: DOM.find_all('table')[7].find_all('a')
+  # Content: dom.find_all('span',{'portletmode':'simpleArticleAttri'})
+host_sklpde = 'http://sklpde.ustc.edu.cn'
+url_sklpde = 'http://sklpde.ustc.edu.cn/7107/list.htm'
+dom_sklpde = get_html(url_sklpde)
+for elem in dom_sklpde.find_all('table')[7].find_all('a'):
+  get_page(host_sklpde + elem['href'], elem['title'], source='USTC-SKLPDE', store_content=False)
 
 db.close()

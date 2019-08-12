@@ -8,6 +8,7 @@ import socks
 import json
 import time
 import pymysql
+import re
 
 REQUEST_DELAY = 0.2 # second
 
@@ -65,7 +66,8 @@ def get_html(url, encoding='UTF-8'):
 
 def get_page(news_url, news_title, source='USTC', store_content = True):
   ### Check MySQL DB
-  cmd = "SELECT * FROM info WHERE title='%s'" % news_title
+  news_title = re.sub('[\[\]]',' ',news_title)
+  cmd = "SELECT * FROM info WHERE title='%s' AND source='%s'" % (news_title, source)
   if(p.execute(cmd) > 0):
     print('[+] INFO existed - ' + news_title)
     return False

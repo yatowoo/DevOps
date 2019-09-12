@@ -36,7 +36,7 @@ log = ''
 TODAY = time.strftime("%Y%m%d")
 log = log + '## 科大新闻 - '+TODAY+'\n\n'
 datestamp = time.strftime("%Y-%m-%d 00:00:00")
-cmd = "SELECT * FROM info WHERE DATE(scrap_time) >= '" + datestamp + "' AND source LIKE '%USTC%'"
+cmd = "SELECT * FROM info WHERE scrap_time >= '" + datestamp + "' AND source LIKE '%USTC%'"
 if(p.execute(cmd) > 0):
   result = p.fetchall()
   for row in result:
@@ -48,7 +48,7 @@ if(PUSH_DAILY):
   datestamp = time.strftime("%Y-%m-%d 00:00:00")
 else:
   datestamp = time.strftime("%Y-%m-%d %H:00:00")
-cmd = "SELECT * FROM info WHERE DATE(scrap_time) >= '" + datestamp + "' AND source='上海博物馆'"
+cmd = "SELECT * FROM info WHERE scrap_time >= '" + datestamp + "' AND source='上海博物馆'"
 if(p.execute(cmd) > 0):
   PUSH_ALERT = True
   result = p.fetchall()

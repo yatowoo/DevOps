@@ -44,7 +44,7 @@ if(p.execute(cmd) > 0):
 
 # 上海博物馆
 log = log + '## 上海博物馆\n'
-if(PUSH_DAILY):
+if(PUSH_DAILY or PUSH_ALERT):
   datestamp = time.strftime("%Y-%m-%d 00:00:00")
 else:
   datestamp = time.strftime("%Y-%m-%d %H:00:00")
@@ -53,7 +53,7 @@ if(p.execute(cmd) > 0):
   PUSH_ALERT = True
   result = p.fetchall()
   for row in result:
-    log = log + '[' + row[2] + '](' + row[4] + ')\n\n'
+    log = log + '[' + str(row[1])[:10] + ' - ' +row[2] + '](' + row[4] + ')\n\n'
 
 db.close()
 

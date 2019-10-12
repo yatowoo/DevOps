@@ -196,12 +196,12 @@ for elem in dom.find(id='wp_news_w06').find_all('a') + dom.find(id='wp_news_w07'
 # Graduate School
 print('\n======RSS Update : USTC-Gradschool======')
 host_grad = 'https://gradschool.ustc.edu.cn/'
-dom = get_html(host_grad, encoding='gb2312')
-for elem in dom.find_all('a')[29:39] + dom.find_all('a')[43:53]:
+dom = get_html(host_grad)
+for elem in dom.find('div',{'class':'notice'}).find_all('a')[1:] + dom.find('div',{'class':'news'}).find_all('a')[1:]:
   url = elem['href']
   if(not url.startswith('http')):
     url = host_grad + '/' + url
-  get_page(url, elem.text, source='USTC-Gradschool', store_content=False)
+  get_page(url, elem['title'], source='USTC-Gradschool', store_content=False)
 
 
 db.close()

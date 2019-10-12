@@ -40,7 +40,7 @@ cmd = "SELECT * FROM info WHERE scrap_time >= '" + datestamp + "' AND source LIK
 if(p.execute(cmd) > 0):
   result = p.fetchall()
   for row in result:
-    log = log + '[' + row[2] + '](' + row[4] + ')\n\n'
+    log = log + '[' + row[7].replace('USTC-','') + ' - ' + row[2] + '](' + row[4] + ')\n\n'
 
 # 上海博物馆
 log = log + '## 上海博物馆\n'

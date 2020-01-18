@@ -4,7 +4,7 @@
 
 import requests
 import json
-import time
+import time, datetime
 import sys
 import pymysql
 
@@ -32,14 +32,20 @@ with open('private-db.json') as f:
 
 # Load log contents for pushing
 log = ''
+if(PUSH_DAILY or PUSH_ALERT):
+  datestamp = str(datetime.date.today() - datetime.timedelta(days=1)) + ' 22:00:00'
+else:
+  datestamp = time.strftime("%Y-%m-%d %H:00:00")
 # 科大新闻
 TODAY = time.strftime("%Y%m%d")
 log = log + '## 科大新闻 - '+TODAY+'\n\n'
-datestamp = time.strftime("%Y-%m-%d 00:00:00")
 cmd = "SELECT * FROM info WHERE scrap_time >= '" + datestamp + "' AND source LIKE '%USTC%'"
 if(p.execute(cmd) > 0):
   result = p.fetchall()
   for row in result:
+    title = row[2]
+    if('人才引进' in title):
+      PUSH_ALERT = True
     log = log + '[' + row[7].replace('USTC-','') + ' - ' + row[2] + '](' + row[4] + ')\n\n'
 
 # 上海博物馆

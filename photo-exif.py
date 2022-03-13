@@ -13,4 +13,6 @@ with Image.open(sys.argv[1]) as img:
     exit()
   cam = exif.get(272)
   if(cam is not None):
-    print(cam)
+    cam = cam.strip('\0')
+    if(cam is not None):
+      print(cam)
